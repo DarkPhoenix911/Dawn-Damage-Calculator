@@ -2,6 +2,8 @@ import * as I from './data/interface';
 import {Stats} from './stats';
 import {toID, extend, assignWithout} from './util';
 import {State} from './state';
+import {Field, Side} from './field';
+import { getMimicryType } from './mechanics/util';
 
 const STATS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as I.StatID[];
 const SPC = new Set(['spc']);
@@ -23,6 +25,8 @@ export class Pokemon implements State.Pokemon {
   dynamaxLevel?: number;
   isSaltCure?: boolean;
   alliesFainted?: number;
+  foesFainted?: number;
+  relicanthTurns?: number;
   boostedStat?: I.StatIDExceptHP | 'auto';
   item?: I.ItemName;
   teraType?: I.TypeName;
@@ -68,6 +72,8 @@ export class Pokemon implements State.Pokemon {
     this.isSaltCure = !!options.isSaltCure;
     this.alliesFainted = options.alliesFainted;
     this.boostedStat = options.boostedStat;
+    this.foesFainted = options.foesFainted;
+    this.relicanthTurns = options.relicanthTurns;
     this.teraType = options.teraType;
     this.item = options.item;
     this.nature = options.nature || ('Serious' as I.NatureName);
@@ -152,6 +158,28 @@ export class Pokemon implements State.Pokemon {
     return false;
   }
 
+  // Checks if the Pokemon has an "invisble" type change due to abilities
+  hasInvisisbleType(opponent: Pokemon, field: Field, ...types: I.TypeName[]) {
+    for (const type of types) {
+      if (this.hasMimicryType(field, type)) return true;
+    }
+    return false;
+  }
+
+  hasReflectorType(opponent: Pokemon, type: I.TypeName) {
+    return this.ability != 'Reflector'
+      ? false
+      : opponent.types[1]
+        ? opponent.types[1] === type
+        : opponent.types[0] === type;
+  }
+
+  hasMimicryType(field: Field, type: I.TypeName) {
+    return this.ability != 'Mimicry'
+      ? false
+      : getMimicryType(field) === type;
+  }
+
   named(...names: string[]) {
     return names.includes(this.name);
   }
@@ -166,6 +194,8 @@ export class Pokemon implements State.Pokemon {
       isSaltCure: this.isSaltCure,
       alliesFainted: this.alliesFainted,
       boostedStat: this.boostedStat,
+      foesFainted: this.foesFainted,
+      relicanthTurns: this.relicanthTurns,
       item: this.item,
       gender: this.gender,
       nature: this.nature,

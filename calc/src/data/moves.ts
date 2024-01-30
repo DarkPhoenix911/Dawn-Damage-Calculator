@@ -40,6 +40,8 @@ export interface MoveData {
   readonly isPulse?: boolean;
   readonly isSlicing?: boolean;
   readonly isWind?: boolean;
+  readonly isBeam?: boolean;
+  readonly isStabbing?: boolean;
 }
 
 const RBY: {[name: string]: MoveData} = {
@@ -4912,7 +4914,162 @@ const SV_PATCH: {[name: string]: DeepPartial<MoveData>} = {
   },
 };
 
-const SV: {[name: string]: MoveData} = extend(true, {}, SS, SV_PATCH);
+const CHROMATIC_PATCH: {[name: string]: DeepPartial<MoveData>} = {
+  'Charge Beam': {isBeam: true},
+  'Hyper Beam': {isBeam: true},
+  'Ice Beam': {isBeam: true},
+  'Psybeam': {isBeam: true},
+  'Signal Beam': {isBeam: true},
+  'Solar Beam': {isBeam: true},
+  'Horn Attack': {isStabbing: true},
+  'Fury Attack': {isStabbing: true},
+  'Poison Sting': {isStabbing: true},
+  'Twineedle': {isStabbing: true},
+  'Pin Missile': {isStabbing: true},
+  'Peck': {isStabbing: true},
+  'Drill Peck': {isStabbing: true},
+  'Megahorn': {isStabbing: true},
+  'Poison Jab': {isStabbing: true},
+  'Needle Arm': {isStabbing: true},
+  'Pluck': {isStabbing: true},
+  'Drill Run': {isStabbing: true},
+  'Horn Leech': {isStabbing: true},
+  'Fell Stinger': {isStabbing: true},
+  'Smart Strike': {isStabbing: true},
+  'Branch Poke': {isStabbing: true},
+  'False Surrender': {isStabbing: true},
+  'Glacial Lance': {isStabbing: true},
+  'Electric POGCHAMPION': {
+    bp: 20,
+    type: 'Electric',
+    category: 'Special',
+    zp: 20,
+    maxPower: 20,
+  },
+  'Steel POGCHAMPION': {
+    bp: 20,
+    type: 'Steel',
+    category: 'Special',
+    zp: 20,
+    maxPower: 20,
+  },
+  'Rock POGCHAMPION': {
+    bp: 20,
+    type: 'Rock',
+    category: 'Special',
+    zp: 20,
+    maxPower: 20,
+  },
+  'Deluge': {
+    bp: 60,
+    type: 'Water',
+    category: 'Physical',
+    zp: 120,
+    maxPower: 110,
+  },
+  'Ethereal Tempest': {
+    bp: 90,
+    type: 'Flying',
+    category: 'Special',
+    zp: 175,
+    maxPower: 130,
+    secondaries: true,
+    isWind: true,
+  },
+  'Hexing Slash': {
+    bp: 90,
+    type: 'Ghost',
+    category: 'Physical',
+    zp: 175,
+    maxPower: 130,
+    makesContact: true,
+    isSlicing: true,
+    secondaries: true,
+    drain: [1, 2],
+  },
+  'Irritation': {
+    bp: 60,
+    type: 'Bug',
+    category: 'Special',
+    zp: 120,
+    maxPower: 110,
+  },
+  'Magma Drift': {
+    bp: 90,
+    type: 'Fire',
+    category: 'Special',
+    zp: 175,
+    maxPower: 130,
+    target: 'allAdjacentFoes',
+  },
+  'Mirror Beam': {
+    bp: 90,
+    type: 'Steel',
+    category: 'Special',
+    zp: 175,
+    maxPower: 130,
+    isBeam: true,
+  },
+  'Mud Barrage': {
+    bp: 25,
+    type: 'Ground',
+    category: 'Special',
+    multihit: [2, 5],
+    zp: 140,
+    maxPower: 130,
+  },
+  'Poison Sweep': {
+    bp: 50,
+    type: 'Poison',
+    category: 'Physical',
+    zp: 100,
+    maxPower: 100,
+    secondaries: true,
+    makesContact: true,
+  },
+  'Quicksilver Spear': {
+    bp: 80,
+    type: 'Steel',
+    category: 'Physical',
+    zp: 160,
+    maxPower: 130,
+    secondaries: true,
+  },
+  'Slash and Burn': {
+    bp: 90,
+    type: 'Grass',
+    category: 'Physical',
+    zp: 175,
+    maxPower: 130,
+    secondaries: true,
+    makesContact: true,
+    isSlicing: true,
+  },
+  'Stacking Shot': {
+    bp: 40,
+    type: 'Fighting',
+    category: 'Physical',
+    zp: 100,
+    maxPower: 70,
+    makesContact: true,
+  },
+  'Waking Shock': {
+    bp: 80,
+    type: 'Electric',
+    category: 'Physical',
+    zp: 160,
+    maxPower: 130,
+  },
+  'Vile Assault': {
+    bp: 90,
+    type: 'Poison',
+    category: 'Physical',
+    zp: 175,
+    maxPower: 90,
+  },
+};
+
+const SV: {[name: string]: MoveData} = extend(true, {}, SS, SV_PATCH, CHROMATIC_PATCH);
 
 export const MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
 
@@ -4999,6 +5156,8 @@ class Move implements I.Move {
     if (data.isPulse) this.flags.pulse = 1;
     if (data.isSlicing) this.flags.slicing = 1;
     if (data.isWind) this.flags.wind = 1;
+    if (data.isBeam) this.flags.beam = 1;
+    if (data.isStabbing) this.flags.stabbing = 1;
 
     assignWithout(this, data, Move.FLAGS);
 

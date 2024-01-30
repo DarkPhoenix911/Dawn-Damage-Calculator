@@ -11,6 +11,8 @@ export namespace State {
     isSaltCure?: boolean;
     alliesFainted?: number;
     boostedStat?: I.StatIDExceptHP | 'auto';
+    foesFainted?: number;
+    relicanthTurns?: number;
     item?: I.ItemName;
     gender?: I.GenderName;
     nature?: I.NatureName;
@@ -34,6 +36,7 @@ export namespace State {
     hits?: number;
     timesUsed?: number;
     timesUsedWithMetronome?: number;
+    stockpiles?: number;
     overrides?: Partial<I.Move>;
   }
 
@@ -73,6 +76,7 @@ export namespace State {
     isFlowerGift?: boolean;
     isFriendGuard?: boolean;
     isAuroraVeil?: boolean;
+    isAreniteWall?: boolean;
     isBattery?: boolean;
     isPowerSpot?: boolean;
     isSwitching?: 'out' | 'in';

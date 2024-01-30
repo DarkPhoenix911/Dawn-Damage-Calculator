@@ -337,6 +337,12 @@ const SV = SS.concat([
   'Wind Power',
   'Wind Rider',
   'Zero to Hero',
+  // chromatic abilities
+  'Mastery',
+  'Type Sync',
+  'Inexorable',
+  'Reflector',
+  'Resuscitation',
 ]);
 
 export const ABILITIES = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
